@@ -3,44 +3,47 @@ import base64
 import re
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
-from youtube_transcript_api.formatters import TextFormatter
 from youtube_transcript_api._errors import (
     NoTranscriptFound,
     TranscriptsDisabled,
     VideoUnavailable,
-    RequestBlocked,
-    IPBlocked
+    YouTubeTranscriptApiException
 )
 
 load_dotenv()
 
+# ---------- EXTRACT VIDEO ID ----------
 def get_match(url):
     pattern = r"(?:v=|youtu\.be/|embed/|shorts/)([A-Za-z0-9_-]{11})"
     match = re.search(pattern, url)
     return match.group(1) if match else ""
 
+
+# ---------- TRANSCRIPT FUNCTION ----------
+@st.cache_data(ttl=3600)
 def get_transcript(url):
+
     if not url:
         return "", "Empty URL"
 
     video_code = get_match(url)
+
     if not video_code:
         return "", "Invalid URL"
 
     try:
-        # Get transcript list
         transcript_list = YouTubeTranscriptApi.list_transcripts(video_code)
 
         # Try manual captions first
         try:
             transcript = transcript_list.find_manually_created_transcript(['en'])
         except NoTranscriptFound:
-            # fallback to auto-generated captions
             transcript = transcript_list.find_generated_transcript(['en'])
 
         data = transcript.fetch()
 
         main_script = " ".join([item['text'] for item in data])
+
         return main_script, "Success"
 
     except TranscriptsDisabled:
@@ -52,8 +55,9 @@ def get_transcript(url):
     except VideoUnavailable:
         return "", "Video unavailable or private"
 
-    except (RequestBlocked, IPBlocked):
-        return "", "IP blocked by YouTube"
+    # Handles IP block, rate limit etc across all versions
+    except YouTubeTranscriptApiException as e:
+        return "", f"YouTube blocked request or rate limited: {str(e)}"
 
     except Exception as e:
         return "", f"Unknown error: {str(e)}"
