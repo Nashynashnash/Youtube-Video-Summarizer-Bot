@@ -26,7 +26,7 @@ def get_transcript(url):
 
     try:
         # Works in ALL versions
-        transcript = YouTubeTranscriptApi.get_transcript(video_code, languages=['en'])
+        transcript = YouTubeTranscriptApi.fetch(video_code, languages=['en'])
 
         main_script = " ".join([item['text'] for item in transcript])
 
