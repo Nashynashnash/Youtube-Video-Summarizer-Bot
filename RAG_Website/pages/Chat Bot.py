@@ -15,7 +15,14 @@ import re
 load_dotenv()
 
 st.title('MyGPT')
-transcript = st.session_state['input']
+
+# Check session state first
+if "input" not in st.session_state or not st.session_state["input"]:
+    st.warning("Please enter a YouTube link first.")
+    st.switch_page("Home.py")  # change to your actual main page file
+    st.stop()
+
+transcript = st.session_state["input"]
 
 embed_model = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-001"
