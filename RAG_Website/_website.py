@@ -16,7 +16,7 @@ def get_match(url):
 # ---------- TRANSCRIPT FUNCTION ----------
 @st.cache_data(ttl=3600)
 def get_transcript(url):
-
+    yt_api = YouTubeTranscriptApi()
     if not url:
         return "", "Empty URL"
 
@@ -26,7 +26,7 @@ def get_transcript(url):
 
     try:
         # Works in ALL versions
-        transcript = YouTubeTranscriptApi.fetch(video_code, languages=['en'])
+        transcript = yt_api.fetch(video_code, languages=['en'])
 
         main_script = " ".join([item['text'] for item in transcript])
 
