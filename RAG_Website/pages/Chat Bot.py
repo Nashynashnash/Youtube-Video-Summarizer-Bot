@@ -17,8 +17,7 @@ load_dotenv()
 st.title('MyGPT')
 
 embed_model = GoogleGenerativeAIEmbeddings(
-    model="gemini-embedding-001",
-    api_key=api
+    model="gemini-embedding-001"
 )
 
 vector_store = Chroma(
