@@ -17,11 +17,11 @@ load_dotenv()
 st.title('MyGPT')
 
 # Check session state first
-if "input" not in st.session_state or not st.session_state["input"]:
+if "transcript" not in st.session_state or not st.session_state["transcript"]:
     st.warning("Please enter a YouTube link first.")
     st.stop()
 
-transcript = st.session_state["input"]
+transcript = st.session_state["transcript"]
 
 # Create columns for dropdowns and chat input
 col1, col2, col3 = st.columns([2, 2, 4])
