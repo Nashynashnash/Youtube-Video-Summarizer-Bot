@@ -16,22 +16,24 @@ def get_match(url):
      return match.group(1)
 
 def get_transcript(url):
-    if not url:
-        return ""
+    video_code = get_match(url)
 
-    match = re.search(r"(?:v=|youtu\.be/)(.{11})", url)
-    if not match:
-        return ""
-
-    video_code = match.group(1)
+    if not video_code:
+        return "Invalid URL"
 
     try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_code, languages=['en'])
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_code)
+
+        try:
+            transcript = transcript_list.find_manually_created_transcript(['en'])
+        except:
+            transcript = transcript_list.find_generated_transcript(['en'])
+
+        data = transcript.fetch()
+        return " ".join([item['text'] for item in data])
+
     except:
         return "Transcript not available"
-
-    main_script = " ".join([script["text"] for script in transcript])
-    return main_script
 
 
 # background image
@@ -62,6 +64,9 @@ if st.button('Enter') and url:
     transcript = get_transcript(url)
 
     if transcript == "Transcript not available":
+        st.write("Can't load this video. Try another one.")
+
+    else if transcript == "Invalid URL":
         st.write("Can't load this video. Try another one.")
     else:
         st.session_state["transcript"] = transcript
