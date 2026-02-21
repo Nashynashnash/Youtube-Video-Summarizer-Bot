@@ -12,24 +12,16 @@ def get_match(url):
     return match.group(1) if match else ""
 
 def get_transcript(url):
+    if url == None :
+        return ''
     video_code = get_match(url)
+    yt_api = YouTubeTranscriptApi()
+    transcript = yt_api.fetch(video_code, languages=['en'])   
+    main_script = ""
+    for script in transcript:
+        main_script = main_script +" " + script.text
 
-    if not video_code:
-        return "Invalid URL"
-
-    try:
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_code)
-
-        try:
-            transcript = transcript_list.find_manually_created_transcript(['en'])
-        except:
-            transcript = transcript_list.find_generated_transcript(['en'])
-
-        data = transcript.fetch()
-        return " ".join([item['text'] for item in data])
-
-    except:
-        return "Transcript not available"
+    return main_script
 
 
 # background image
