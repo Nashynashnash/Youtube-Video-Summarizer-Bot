@@ -11,6 +11,9 @@ from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
+import os
+os.makedirs("/tmp/vector_store", exist_ok=True)
+
 
 load_dotenv()
 
@@ -44,7 +47,7 @@ my_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 vector_store = Chroma(
     collection_name= collection_name,
     embedding_function=embed_model,
-    persist_directory="RAG_Website/vector store"
+    persist_directory="/tmp/vector_store"
 )
 
 splitter = RecursiveCharacterTextSplitter(
@@ -63,7 +66,7 @@ if st.session_state.last_transcript != transcript:
     vector_store = Chroma(
         collection_name=collection_name,
         embedding_function=embed_model,
-        persist_directory="RAG_Website/vector store"
+        persist_directory="/tmp/vector_store"
     )
 
     st.session_state.vector_ready = False
