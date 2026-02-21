@@ -7,13 +7,9 @@ from youtube_transcript_api import YouTubeTranscriptApi
 load_dotenv()
 
 def get_match(url):
-     if not url:
-        return ""
-
-     match = re.search(r"(?:v=|youtu\.be/)(.{11})", url)
-     if not match:
-        return ""
-     return match.group(1)
+    pattern = r"(?:v=|youtu\.be/|embed/|shorts/)([A-Za-z0-9_-]{11})"
+    match = re.search(pattern, url)
+    return match.group(1) if match else ""
 
 def get_transcript(url):
     video_code = get_match(url)
