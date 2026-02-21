@@ -23,6 +23,8 @@ if "transcript" not in st.session_state or not st.session_state["transcript"]:
 
 transcript = st.session_state["transcript"]
 
+collection_name = st.session_state["video_id"]
+
 # Create columns for dropdowns and chat input
 col1, col2, col3 = st.columns([2, 2, 4])
 
@@ -40,7 +42,7 @@ embed_model = GoogleGenerativeAIEmbeddings(
 my_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
 
 vector_store = Chroma(
-    collection_name='samples',
+    collection_name= collection_name,
     embedding_function=embed_model,
     persist_directory="RAG_Website/vector store"
 )
@@ -59,7 +61,7 @@ if st.session_state.last_transcript != transcript:
     vector_store.delete_collection()
 
     vector_store = Chroma(
-        collection_name='samples',
+        collection_name=collection_name,
         embedding_function=embed_model,
         persist_directory="RAG_Website/vector store"
     )
