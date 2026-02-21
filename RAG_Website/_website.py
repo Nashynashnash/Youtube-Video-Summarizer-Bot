@@ -3,8 +3,6 @@ import base64
 import re
 from youtube_transcript_api import YouTubeTranscriptApi
 
-load_dotenv()
-
 def get_transcript(url):
     if url == None :
         return ''
