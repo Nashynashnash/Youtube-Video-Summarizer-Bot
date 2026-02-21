@@ -4,6 +4,21 @@ from RAG.transcript import get_transcript
 import re
 from youtube_transcript_api import YouTubeTranscriptApi
 
+load_dotenv()
+
+def get_transcript(url):
+    if url == None :
+        return ''
+    match = re.search('v=(.{11})',url)
+    video_code = match.group(1)
+    yt_api = YouTubeTranscriptApi()
+    transcript = yt_api.fetch(video_code, languages=['en'])   
+    main_script = ""
+    for script in transcript:
+        main_script = main_script +" " + script.text
+
+    return main_script
+
 with open("RAG_Website/bgm.png", "rb") as f:
     png_data = f.read()
 b64 = base64.b64encode(png_data).decode()
