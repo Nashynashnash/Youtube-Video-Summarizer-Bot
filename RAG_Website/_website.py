@@ -61,5 +61,6 @@ url = st.text_input('')
 if st.button('Enter') and url:
     transcript = get_transcript(url)
     st.session_state["transcript"] = transcript
-    st.session_state["video_id"] = get_match(url)
-    st.switch_page("pages/Chat Bot.py")
+    if transcript != "Transcript not available":
+         st.session_state["video_id"] = get_match(url)
+         st.switch_page("pages/Chat Bot.py")
