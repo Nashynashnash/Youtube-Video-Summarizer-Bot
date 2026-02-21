@@ -13,7 +13,7 @@ def get_match(url):
      match = re.search(r"(?:v=|youtu\.be/)(.{11})", url)
      if not match:
         return ""
-     return match
+     return match.group(1)
 
 def get_transcript(url):
     if not url:
