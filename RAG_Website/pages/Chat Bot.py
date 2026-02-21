@@ -15,6 +15,7 @@ import re
 load_dotenv()
 
 st.title('MyGPT')
+transcript = st.session_state['input']
 
 embed_model = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-001"
