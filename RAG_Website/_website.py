@@ -63,10 +63,7 @@ url = st.text_input('')
 if st.button('Enter') and url:
     transcript = get_transcript(url)
 
-    if transcript == "Transcript not available":
-        st.write("Can't load this video. Try another one.")
-
-    else if transcript == "Invalid URL":
+    if transcript in ["Transcript not available", "Invalid URL"]:
         st.write("Can't load this video. Try another one.")
     else:
         st.session_state["transcript"] = transcript
