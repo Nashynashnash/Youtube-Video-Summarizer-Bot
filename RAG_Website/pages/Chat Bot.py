@@ -40,7 +40,7 @@ embed_model = GoogleGenerativeAIEmbeddings(
 vector_store = Chroma(
     collection_name='samples',
     embedding_function=embed_model,
-    persist_directory="RAG_Website/vector_store"
+    persist_directory="RAG_Website/vector store"
 )
 
 splitter = RecursiveCharacterTextSplitter(
@@ -55,6 +55,13 @@ if "last_transcript" not in st.session_state:
 
 if st.session_state.last_transcript != transcript:
     vector_store.delete_collection()
+
+    vector_store = Chroma(
+        collection_name='samples',
+        embedding_function=embed_model,
+        persist_directory="RAG_Website/vector store"
+    )
+
     st.session_state.vector_ready = False
     st.session_state.last_transcript = transcript
 
