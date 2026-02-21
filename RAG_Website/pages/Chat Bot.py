@@ -19,7 +19,6 @@ st.title('MyGPT')
 # Check session state first
 if "input" not in st.session_state or not st.session_state["input"]:
     st.warning("Please enter a YouTube link first.")
-    st.switch_page("pages/Chat Bot.py")  # change to your actual main page file
     st.stop()
 
 transcript = st.session_state["input"]
