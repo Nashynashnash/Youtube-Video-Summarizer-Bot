@@ -88,12 +88,11 @@ st.markdown('<p style="color:black;">Your Youtube video link here</p>', unsafe_a
 url = st.text_input('')
 
 if st.button('Enter') and url:
-    transcript = get_transcript(url)
 
-    if transcript in ["Transcript not available", "Invalid URL"]:
-        st.write("Can't load this video. Try another one.")
-        len = len(transcript)
-        st.write(len)
+    transcript, status = get_transcript(url)
+
+    if status != "Success":
+        st.write(status)
     else:
         st.session_state["transcript"] = transcript
         st.session_state["video_id"] = get_match(url)
