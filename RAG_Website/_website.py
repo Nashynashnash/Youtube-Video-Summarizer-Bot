@@ -1,21 +1,32 @@
 import streamlit as st
 import base64
 import re
+from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 
-def get_transcript(url):
-    if url == None :
-        return ''
-    match = re.search('v=(.{11})',url)
-    video_code = match.group(1)
-    yt_api = YouTubeTranscriptApi()
-    transcript = yt_api.fetch(video_code, languages=['en'])   
-    main_script = ""
-    for script in transcript:
-        main_script = main_script +" " + script.text
+load_dotenv()
 
+
+def get_transcript(url):
+    if not url:
+        return ""
+
+    match = re.search(r"(?:v=|youtu\.be/)(.{11})", url)
+    if not match:
+        return ""
+
+    video_code = match.group(1)
+
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(video_code, languages=['en'])
+    except:
+        return "Transcript not available"
+
+    main_script = " ".join([script["text"] for script in transcript])
     return main_script
 
+
+# background image
 with open("RAG_Website/bgm.png", "rb") as f:
     png_data = f.read()
 b64 = base64.b64encode(png_data).decode()
@@ -30,25 +41,16 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True
-)   
-import streamlit as st
-
-st.markdown('<h1 style="color:black;">MyGPT</h1>', unsafe_allow_html=True)   
-
-st.markdown(
-    '<p style="color:black;">The best Youtube Video summarizer with the help of AI</p>',
-    unsafe_allow_html=True
 )
 
-st.markdown(
-    '<p style="color:black;">Your Youtube video link here',
-    unsafe_allow_html=True
-)
-input = st.text_input('')
+# UI
+st.markdown('<h1 style="color:black;">MyGPT</h1>', unsafe_allow_html=True)
+st.markdown('<p style="color:black;">The best Youtube Video summarizer with AI</p>', unsafe_allow_html=True)
+st.markdown('<p style="color:black;">Your Youtube video link here</p>', unsafe_allow_html=True)
 
-if st.button('Enter') and input:
-    st.session_state['input'] = get_transcript(input)
-    st.switch_page("pages/Chat Bot.py") 
+url = st.text_input('')
 
-
-
+if st.button('Enter') and url:
+    transcript = get_transcript(url)
+    st.session_state["transcript"] = transcript
+    st.switch_page("pages/Chat Bot.py")
