@@ -12,15 +12,11 @@ from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
 
-#load_dotenv()
-
-#video_url = "https://www.youtube.com/watch?v=9-GRzu6zbS0"
-#query = 'what is the main point of this video'
+load_dotenv()
 
 st.title('MyGPT')
 
 transcript = st.session_state['input']
-query = st.chat_input('Write what you want to understand about the video')
 api = 'AIzaSyAUEhcCt6K9ttkS5bxguFzVL7JMhoJxccU'
 
 embed_model = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001", api_key=api)
@@ -94,6 +90,17 @@ Length of Response: Answer it in the following {length_}
 
     return result.content
 
+
+# Create columns for dropdowns and chat input
+col1, col2, col3 = st.columns([2, 2, 4])
+
+with col1:
+    response_ = st.selectbox('Response format:', ['Bullet Points', 'Paragraph format'])
+with col2:
+    length_ = st.selectbox('Length:', ['Concise one line', 'Few Lines', 'Detailed Paragraph', 'Detailed Report'])
+with col3:
+    query = st.chat_input("Ask a question")   
+    
 # Initialize chat history in session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -105,8 +112,6 @@ for message in st.session_state.messages:
 
 # Process new user input
 
-response_ = st.selectbox('choose reponse format:',['Bullet Points', 'Paragraph format'])
-length_ = st.selectbox('Response Length',['Concise one line answer', 'Few Lines', 'Detailed Paragraph', 'Detailed Report'])
 if query:
     # Add user message to history and display it
     st.session_state.messages.append({"role": "user", "content": query})
