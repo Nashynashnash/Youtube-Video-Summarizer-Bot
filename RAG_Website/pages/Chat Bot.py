@@ -37,6 +37,8 @@ embed_model = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-001"
 )
 
+my_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite")
+
 vector_store = Chroma(
     collection_name='samples',
     embedding_function=embed_model,
