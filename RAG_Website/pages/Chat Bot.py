@@ -23,6 +23,16 @@ if "input" not in st.session_state or not st.session_state["input"]:
 
 transcript = st.session_state["input"]
 
+# Create columns for dropdowns and chat input
+col1, col2, col3 = st.columns([2, 2, 4])
+
+with col1:
+    response_ = st.selectbox('Response format:', ['Bullet Points', 'Paragraph format'])
+with col2:
+    length_ = st.selectbox('Length:', ['Concise one line', 'Few Lines', 'Detailed Paragraph', 'Detailed Report'])
+with col3:
+    query = st.chat_input("Ask a question")
+
 embed_model = GoogleGenerativeAIEmbeddings(
     model="gemini-embedding-001"
 )
@@ -106,16 +116,6 @@ Length of Response: Answer it in the following {length_}
 
     return result.content
 
-
-# Create columns for dropdowns and chat input
-col1, col2, col3 = st.columns([2, 2, 4])
-
-with col1:
-    response_ = st.selectbox('Response format:', ['Bullet Points', 'Paragraph format'])
-with col2:
-    length_ = st.selectbox('Length:', ['Concise one line', 'Few Lines', 'Detailed Paragraph', 'Detailed Report'])
-with col3:
-    query = st.chat_input("Ask a question")   
     
 # Initialize chat history in session state
 if "messages" not in st.session_state:
