@@ -64,4 +64,4 @@ if st.button('Enter') and url:
     if transcript != "Transcript not available":
          st.session_state["video_id"] = get_match(url)
          st.switch_page("pages/Chat Bot.py")
-    st.write('Can't load this video, try another oone')
+    st.write("Can't load this video, try another one")
