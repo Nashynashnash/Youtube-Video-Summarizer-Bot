@@ -1,6 +1,5 @@
 import streamlit as st
 import base64
-from RAG.transcript import get_transcript
 import re
 from youtube_transcript_api import YouTubeTranscriptApi
 
