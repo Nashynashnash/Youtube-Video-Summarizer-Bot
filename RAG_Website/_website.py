@@ -6,6 +6,14 @@ from youtube_transcript_api import YouTubeTranscriptApi
 
 load_dotenv()
 
+def get_match(url):
+     if not url:
+        return ""
+
+    match = re.search(r"(?:v=|youtu\.be/)(.{11})", url)
+    if not match:
+        return ""
+    return match
 
 def get_transcript(url):
     if not url:
@@ -53,4 +61,5 @@ url = st.text_input('')
 if st.button('Enter') and url:
     transcript = get_transcript(url)
     st.session_state["transcript"] = transcript
+    st.session_state["video_id"] = get_match(url)
     st.switch_page("pages/Chat Bot.py")
