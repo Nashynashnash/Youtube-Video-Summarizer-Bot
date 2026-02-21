@@ -16,28 +16,38 @@ load_dotenv()
 
 st.title('MyGPT')
 
-transcript = st.session_state['input']
-api = 'AIzaSyAUEhcCt6K9ttkS5bxguFzVL7JMhoJxccU'
-
-embed_model = GoogleGenerativeAIEmbeddings(model="gemini-embedding-001", api_key=api)
-my_llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",
-    google_api_key=  api
+embed_model = GoogleGenerativeAIEmbeddings(
+    model="gemini-embedding-001",
+    api_key=api
 )
 
 vector_store = Chroma(
-        collection_name = 'samples',
-        embedding_function = embed_model,
-        persist_directory = "RAG_Website/vector store"
+    collection_name='samples',
+    embedding_function=embed_model,
+    persist_directory="RAG_Website/vector_store"
 )
-splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 1000,
-        chunk_overlap = 200,
-        separators=''
-    )
-split_docs = splitter.split_text(transcript)
-vector_store.add_texts(texts=split_docs)
 
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=200,
+    separators=["\n\n", "\n", ".", " "]
+)
+
+# Reset DB when new video comes
+if "last_transcript" not in st.session_state:
+    st.session_state.last_transcript = ""
+
+if st.session_state.last_transcript != transcript:
+    vector_store.delete_collection()
+    st.session_state.vector_ready = False
+    st.session_state.last_transcript = transcript
+
+# Embed only once
+if "vector_ready" not in st.session_state or not st.session_state.vector_ready:
+    split_docs = splitter.split_text(transcript)
+    docs = [Document(page_content=t) for t in split_docs]
+    vector_store.add_documents(docs)
+    st.session_state.vector_ready = True
 
 
 def get_output(docs, query, response_, length_):
